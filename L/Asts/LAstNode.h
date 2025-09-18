@@ -1,0 +1,29 @@
+﻿#pragma once
+#include <memory>
+#include <string>
+
+namespace L
+{
+    enum LAstNodeType
+    {
+        LAstNodeType_Invalid = -1,
+        LAstNodeType_Unknown = 0,
+        LAstNodeType_Symbol,
+        LAstNodeType_Lambda,
+        LAstNodeType_Parentheses,
+        LAstNodeType_Evaluate,
+    };
+    
+    class LAstNode
+    {
+    public:
+        LAstNodeType GetType();
+        virtual ~LAstNode() = default;
+        virtual std::string ToString() = 0;
+
+    protected:
+        LAstNodeType mType = LAstNodeType_Invalid;
+    };
+
+    using LAstNodePtr = std::shared_ptr<LAstNode>;
+}
