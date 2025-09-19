@@ -139,6 +139,7 @@ namespace L
         }
         outNode = leftNode;
         outEndToken = token;
+        return nullptr;
     }
     
     LDiagnosticPtr LParser::ParseSingleSymbol(const LToken& inStartToken, LAstNodePtr& outNode, LToken& outEndToken)

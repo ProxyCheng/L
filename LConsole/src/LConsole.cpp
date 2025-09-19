@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string>
 
-#include "../L/LEngine.h"
+#include "L/LEngine.h"
+#include "L/LDiagnostic.h"
 
 using namespace L;
 

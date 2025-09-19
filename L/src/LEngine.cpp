@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-#include "LLexer.h"
-#include "LParser.h"
+#include "LDiagnostic.h"
+#include "Parsers/LLexer.h"
+#include "Parsers/LParser.h"
 
 namespace L
 {
