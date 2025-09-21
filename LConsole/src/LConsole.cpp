@@ -10,7 +10,13 @@ using namespace L;
 
 int main(int argc, char* argv[])
 {
-    LEngine engine;
+    std::unique_ptr<LEngine> engine = std::make_unique<LEngine>();
+    LDiagnosticPtr diagnostic = engine->Init();
+    if (diagnostic)
+    {
+        std::cerr << diagnostic->ToString() << std::endl;
+        return -1;
+    }
     while (true)
     {
         std::string expression;
@@ -20,7 +26,7 @@ int main(int argc, char* argv[])
         if (expression.empty())
             break;
         std::string result;
-        LDiagnosticPtr diagnostic = engine.Evaluate(expression, result);
+        diagnostic = engine->Evaluate(expression, result);
         if (diagnostic)
         {
             std::cerr << diagnostic->ToString() << std::endl;

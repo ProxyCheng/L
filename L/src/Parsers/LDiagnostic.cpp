@@ -17,6 +17,8 @@ namespace L
         std::string result;
         result += mDescription + "\n";
         result += mExpression + "\n";
+        if (mStartPosition < 0)
+            return result;
         for (int i = 0; i < mStartPosition; i++)
             result += " ";
         result += "^";

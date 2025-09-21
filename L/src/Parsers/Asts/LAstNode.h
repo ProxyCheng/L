@@ -12,13 +12,15 @@ namespace L
         LAstNodeType_Lambda,
         LAstNodeType_Parentheses,
         LAstNodeType_Evaluate,
+        LAstNodeType_Assign,
     };
     
     class LAstNode
     {
     public:
-        LAstNodeType GetType();
+        LAstNode(LAstNodeType inType);
         virtual ~LAstNode() = default;
+        LAstNodeType GetType();
         virtual std::string ToString() = 0;
 
     protected:

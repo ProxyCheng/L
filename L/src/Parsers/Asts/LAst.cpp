@@ -12,6 +12,11 @@ namespace L
         return mRoot;
     }
 
+    const LAstNodePtr& LAst::RefRoot() const
+    {
+        return mRoot;
+    }
+
     std::string LAst::ToString()
     {
         if (!mRoot)

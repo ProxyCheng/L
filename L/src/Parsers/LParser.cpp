@@ -1,10 +1,10 @@
 ﻿#include "LParser.h"
 
-#include "Asts/LAssignNode.h"
-#include "Asts/LEvaluateNode.h"
-#include "Asts/LLambdaNode.h"
+#include "Asts/LAssignAstNode.h"
+#include "Asts/LEvaluateAstNode.h"
+#include "Asts/LLambdaAstNode.h"
 #include "Asts/LPrenthesesNode.h"
-#include "Asts/LSymbolNode.h"
+#include "Asts/LSymbolAstNode.h"
 
 namespace L
 {
@@ -73,7 +73,7 @@ namespace L
                 token.mStartPosition,
                 token.mLength
             );
-        LSymbolNodePtr headNode = std::make_shared<LSymbolNode>(token.mData);
+        LSymbolAstNodePtr headNode = std::make_shared<LSymbolAstNode>(token.mData);
         do
         {
             RETURN_IF_PANIC(mLexer->TakeToken(token))
@@ -88,7 +88,7 @@ namespace L
             );
         LAstNodePtr bodyNode;
         RETURN_IF_PANIC(ParseInternal(bodyNode, outEndToken))
-        outNode = std::make_shared<LLambdaNode>(headNode, bodyNode);
+        outNode = std::make_shared<LLambdaAstNode>(headNode, bodyNode);
         return nullptr;
     }
 
@@ -104,14 +104,14 @@ namespace L
                 token.mStartPosition,
                 token.mLength
             );
-        outNode = std::make_shared<LParenthesesNode>(childNode);
+        outNode = std::make_shared<LParenthesesAstNode>(childNode);
         RETURN_IF_PANIC(mLexer->TakeToken(outEndToken))
         return nullptr;
     }
 
     LDiagnosticPtr LParser::ParseSymbolStart(const LToken& inStartToken, LAstNodePtr& outNode, LToken& outEndToken)
     {
-        LSymbolNodePtr symbolNode = std::make_shared<LSymbolNode>(inStartToken.mData);
+        LSymbolAstNodePtr symbolNode = std::make_shared<LSymbolAstNode>(inStartToken.mData);
         LToken token;
         do
         {
@@ -122,20 +122,19 @@ namespace L
         {
             LAstNodePtr rightNode;
             RETURN_IF_PANIC(ParseInternal(rightNode, outEndToken))
-            outNode = std::make_shared<LAssignNode>(symbolNode, rightNode);
+            outNode = std::make_shared<LAssignAstNode>(symbolNode, rightNode);
             return nullptr;
         }
         LAstNodePtr leftNode = symbolNode;
         while (token.mType == LTokenType_Symbol || token.mType == LTokenType_LParentheses)
         {
             LAstNodePtr rightNode;
-            RETURN_IF_PANIC(ParseSingleSymbol(token, rightNode, outEndToken))
-            leftNode = std::make_shared<LEvaluateNode>(leftNode, rightNode);
-            do
-            {
+            LToken token2;
+            RETURN_IF_PANIC(ParseSingleSymbol(token, rightNode, token2))
+            token = token2;
+            leftNode = std::make_shared<LEvaluateAstNode>(leftNode, rightNode);
+            while (token.mType == LTokenType_Space)
                 RETURN_IF_PANIC(mLexer->TakeToken(token))
-            }
-            while (token.mType == LTokenType_Space);
         }
         outNode = leftNode;
         outEndToken = token;
@@ -147,11 +146,18 @@ namespace L
         switch (inStartToken.mType)
         {
         case LTokenType_Symbol:
-            outNode = std::make_shared<LSymbolNode>(inStartToken.mData);
+            outNode = std::make_shared<LSymbolAstNode>(inStartToken.mData);
             RETURN_IF_PANIC(mLexer->TakeToken(outEndToken))
             break;
         case LTokenType_LParentheses:
             return ParseParentheses(inStartToken, outNode, outEndToken);
+        default:
+            return std::make_shared<LDiagnostic>(
+                "Expecting a symbol.",
+                mLexer->RefExpression(),
+                inStartToken.mStartPosition,
+                inStartToken.mLength
+            );
         }
         return nullptr;
     }

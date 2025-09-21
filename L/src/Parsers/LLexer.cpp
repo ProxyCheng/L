@@ -18,6 +18,7 @@ namespace L
         LCharType_Other,
         LCharType_LParentheses,
         LCharType_RParentheses,
+        LCharType_Equal,
     };
 
     inline LCharType GetCharType(char c)
@@ -37,6 +38,8 @@ namespace L
             return LCharType_Space;
         case 'L':
             return LCharType_L;
+        case '=':
+            return LCharType_Equal;
         }
         if (std::isspace(c))
             return LCharType_Space;
@@ -79,7 +82,7 @@ namespace L
             break;
         case LCharType_Other:
             d = TakeChar();
-            while (GetCharType(d) == LCharType_Other || GetCharType(d) == LCharType_Digit)
+            while (GetCharType(d) == LCharType_Other || GetCharType(d) == LCharType_Digit || GetCharType(d) == LCharType_L)
                 d = TakeChar();
             Revoke();
             outToken.mType = LTokenType_Symbol;
@@ -89,6 +92,9 @@ namespace L
             break;
         case LCharType_RParentheses:
             outToken.mType = LTokenType_RParentheses;
+            break;
+        case LCharType_Equal:
+            outToken.mType = LTokenType_Assign;
             break;
         default:
             outToken.mType = LTokenType_Unknown;

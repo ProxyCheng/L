@@ -2,13 +2,24 @@
 
 namespace L
 {
-    LParenthesesNode::LParenthesesNode(const LAstNodePtr& inChildNode)
-        : mChildNode(inChildNode)
+    LParenthesesAstNode::LParenthesesAstNode(const LAstNodePtr& inChildNode)
+        : LAstNode(LAstNodeType_Parentheses)
+        , mChildNode(inChildNode)
     {
     }
 
-    std::string LParenthesesNode::ToString()
+    std::string LParenthesesAstNode::ToString()
     {
         return std::string("(") + mChildNode->ToString() + ")";
+    }
+
+    LAstNodePtr& LParenthesesAstNode::RefChildNode()
+    {
+        return mChildNode;
+    }
+
+    const LAstNodePtr& LParenthesesAstNode::RefChildNode() const
+    {
+        return mChildNode;
     }
 }

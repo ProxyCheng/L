@@ -3,11 +3,13 @@
 
 namespace L
 {
-    class LParenthesesNode : public LAstNode
+    class LParenthesesAstNode : public LAstNode
     {
     public:
-        LParenthesesNode(const LAstNodePtr& inChildNode);
+        LParenthesesAstNode(const LAstNodePtr& inChildNode);
         virtual std::string ToString() override;
+        LAstNodePtr& RefChildNode();
+        const LAstNodePtr& RefChildNode() const;
 
     protected:
         LAstNodePtr mChildNode;

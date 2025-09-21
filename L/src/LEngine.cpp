@@ -3,17 +3,25 @@
 #include <iostream>
 
 #include "LDiagnostic.h"
+#include "LEnginePrivate.h"
 #include "Parsers/LLexer.h"
-#include "Parsers/LParser.h"
 
 namespace L
 {
+    LEngine::LEngine()
+        : mPrivate(std::make_shared<LEnginePrivate>(this))
+    {
+    }
+
+    LEngine::~LEngine() = default;
+
+    LDiagnosticPtr LEngine::Init()
+    {
+        return mPrivate->Init();
+    }
+
     LDiagnosticPtr LEngine::Evaluate(const std::string& inExpression, std::string& outResult)
     {
-        LLexer lexer;
-        LParser parser(&lexer);
-        LAst ast;
-        RETURN_IF_PANIC(parser.Parse(inExpression, ast))
-        outResult = ast.ToString();
+        return mPrivate->Evaluate(inExpression, outResult);
     }
 }

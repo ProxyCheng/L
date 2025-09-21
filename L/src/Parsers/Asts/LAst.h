@@ -9,6 +9,7 @@ namespace L
     {
     public:
         LAstNodePtr& RefRoot();
+        const LAstNodePtr& RefRoot() const;
         std::string ToString();
         
     protected:
